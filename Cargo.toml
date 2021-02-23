@@ -1,0 +1,12 @@
+[package]
+name = "sqlcli"
+version = "0.1.0"
+authors = ["Ankit Solanki <ankit@cleartax.in>"]
+homepage = "https://github.com/ClearTax/sqlcli"
+license = "MIT"
+edition = "2018"
+
+[dependencies]
+sqlparser = "0.8.0"
+simple_logger = "1.11.0"
+clap = "3.0.0-beta.2"
