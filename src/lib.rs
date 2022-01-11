@@ -289,6 +289,23 @@ fn table_names_from_expr(expr: Expr) -> Vec<String> {
         Expr::Wildcard => {}
         Expr::QualifiedWildcard(_) => {}
         Expr::CompoundIdentifier(_) => {}
+        Expr::IsDistinctFrom(_, _) => {},
+        Expr::IsNotDistinctFrom(_, _) => {},
+        Expr::TryCast { expr, data_type: _ } => {
+            return table_names_from_expr(*expr);
+        },
+        Expr::Trim { expr, trim_where } => {
+            let mut vec = vec![];
+
+            vec.extend(table_names_from_expr(*expr));
+            if let Some((_, e)) = trim_where {
+                vec.extend(table_names_from_expr(*e));
+            }
+            return vec;
+        },
+        Expr::GroupingSets(_) => {},
+        Expr::Cube(_) => {},
+        Expr::Rollup(_) => {},
     }
 
     return vec![];
