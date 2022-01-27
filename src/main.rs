@@ -78,7 +78,7 @@ fn main() {
     let matches = app.get_matches();
 
     if matches.is_present("debug") {
-        SimpleLogger::new().init().unwrap();
+        SimpleLogger::new().with_utc_timestamps().init().unwrap();
     }
 
     if let Some(ref matches) = matches.subcommand_matches("ast") {
