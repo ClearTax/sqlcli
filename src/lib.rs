@@ -1,4 +1,4 @@
-#![feature(box_syntax, box_patterns)]
+// #![feature(box_syntax, box_patterns)]
 #![allow(clippy::clippy::needless_return)]
 
 extern crate sqlparser;
@@ -8,6 +8,7 @@ use sqlparser::ast::*;
 use sqlparser::dialect::GenericDialect;
 use sqlparser::parser::Parser;
 use std::collections::HashSet;
+use wasm_bindgen::prelude::*;
 
 pub fn parse_select_statement(sql: String) -> Result<Query, String> {
     let dialect = GenericDialect {};
@@ -128,12 +129,12 @@ fn table_names_from_set_expr(body: SetExpr) -> Vec<String> {
         }
 
         SetExpr::SetOperation {
-            box left,
-            box right,
+            left,
+            right,
             ..
         } => {
-            let mut table_names = table_names_from_set_expr(left);
-            let l2 = table_names_from_set_expr(right);
+            let mut table_names = table_names_from_set_expr(*left);
+            let l2 = table_names_from_set_expr(*right);
             table_names.extend(l2);
             return table_names;
         }
@@ -557,6 +558,22 @@ fn projection_name_from_expr(e: Expr) -> String {
         }
     }
 }
+
+#[wasm_bindgen]
+extern { pub fn alert(s: &str); }
+
+#[wasm_bindgen]
+pub fn extract_table_names(sql: String) -> JsValue {
+    let mut result = vec![];
+    match get_table_names(sql) {
+        Ok(table_names) => result = table_names,
+        Err(e) => alert(format!("Error in Query: {:?}", e).as_str())
+    }
+    JsValue::from(result.into_iter()
+        .map(|x| JsValue::from_str(x.as_str()))
+        .collect::<js_sys::Array>())
+}
+
 
 #[cfg(test)]
 mod projection_tests {
