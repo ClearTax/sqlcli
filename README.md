@@ -147,6 +147,13 @@ WILDCARD: b.*
 
 ## Build & test
 
+Building for WASM:
+
+```
+# Install wasm-pack first (eg: `brew install wasm-pack`)
+$ wasm-pack build --target nodejs
+```
+
 Install [rust](https://www.rust-lang.org/), and run:
 
 ```
