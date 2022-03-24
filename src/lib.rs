@@ -15,7 +15,7 @@ pub fn parse_select_statement(sql: String) -> Result<Query, String> {
 
     match results {
         Err(error) => {
-            return Err(format!("Parsing error: {}", error.to_string()));
+            return Err(format!("Parsing error: {}", error));
         }
         Ok(mut ast) => {
             if ast.is_empty() {
