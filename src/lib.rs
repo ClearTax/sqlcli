@@ -1,5 +1,4 @@
-// #![feature(box_syntax, box_patterns)]
-#![allow(clippy::clippy::needless_return)]
+#![allow(clippy::needless_return)]
 
 extern crate sqlparser;
 

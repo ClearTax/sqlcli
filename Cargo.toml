@@ -10,7 +10,7 @@ edition = "2018"
 channel = "nightly"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 sqlparser = "0.13.0"
