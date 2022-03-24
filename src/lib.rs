@@ -456,8 +456,8 @@ mod table_name_tests {
     #[test]
     fn case_with_sub_query() {
         assert(
-    "select 
-            abc, 
+    "select
+            abc,
             (case when user_id > 0 then (select max(active_time) from users where id = user_id) else NULL end) last_active_time
           from events",
 vec!["events", "users"]);
@@ -466,7 +466,7 @@ vec!["events", "users"]);
     #[test]
     fn window_function() {
         assert(
-            "select emp_name, dealer_id, sales, avg(sales) over (partition by dealer_id) as avgsales from q1_sales;", 
+            "select emp_name, dealer_id, sales, avg(sales) over (partition by dealer_id) as avgsales from q1_sales;",
             vec!["q1_sales"]);
     }
 }
@@ -560,20 +560,15 @@ fn projection_name_from_expr(e: Expr) -> String {
 }
 
 #[wasm_bindgen]
-extern { pub fn alert(s: &str); }
-
-#[wasm_bindgen]
 pub fn extract_table_names(sql: String) -> JsValue {
-    let mut result = vec![];
     match get_table_names(sql) {
-        Ok(table_names) => result = table_names,
-        Err(e) => alert(format!("Error in Query: {:?}", e).as_str())
+        Ok(table_names) =>
+        JsValue::from(table_names.into_iter()
+            .map(|x| JsValue::from_str(x.as_str()))
+            .collect::<js_sys::Array>()),
+        Err(e) => JsValue::from_str(format!("Error in Query: {:?}", e).as_str())
     }
-    JsValue::from(result.into_iter()
-        .map(|x| JsValue::from_str(x.as_str()))
-        .collect::<js_sys::Array>())
 }
-
 
 #[cfg(test)]
 mod projection_tests {
