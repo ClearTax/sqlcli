@@ -1,4 +1,4 @@
-#![allow(clippy::clippy::needless_return)]
+#![allow(clippy::needless_return)]
 
 use clap::App;
 use clap::AppSettings;
@@ -81,7 +81,7 @@ fn main() {
         SimpleLogger::new().with_utc_timestamps().init().unwrap();
     }
 
-    if let Some(ref matches) = matches.subcommand_matches("ast") {
+    if let Some(matches) = matches.subcommand_matches("ast") {
         let input = matches.value_of("<INPUT>").unwrap();
         let sql = read_file_or_stdin(input.to_string());
         match parse_select_statement(sql) {
@@ -95,7 +95,7 @@ fn main() {
         }
     }
 
-    if let Some(ref matches) = matches.subcommand_matches("tables") {
+    if let Some(matches) = matches.subcommand_matches("tables") {
         let input = matches.value_of("<INPUT>").unwrap();
         let sql = read_file_or_stdin(input.to_string());
         let result = get_table_names(sql);
@@ -113,7 +113,7 @@ fn main() {
         }
     }
 
-    if let Some(ref matches) = matches.subcommand_matches("columns") {
+    if let Some(matches) = matches.subcommand_matches("columns") {
         let input = matches.value_of("<INPUT>").unwrap();
         let sql = read_file_or_stdin(input.to_string());
         let result = get_projection_names(sql);

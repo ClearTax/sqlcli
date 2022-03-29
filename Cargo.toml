@@ -6,10 +6,12 @@ homepage = "https://github.com/ClearTax/sqlcli"
 license = "MIT"
 edition = "2018"
 
-[toolchain]
-channel = "nightly"
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 sqlparser = "0.13.0"
 simple_logger = "1.16.0"
 clap = "3.0.0-beta.2"
+wasm-bindgen = "0.2.17"
+js-sys = "0.3.56"

@@ -1,5 +1,4 @@
-#![feature(box_syntax, box_patterns)]
-#![allow(clippy::clippy::needless_return)]
+#![allow(clippy::needless_return)]
 
 extern crate sqlparser;
 
@@ -8,6 +7,7 @@ use sqlparser::ast::*;
 use sqlparser::dialect::GenericDialect;
 use sqlparser::parser::Parser;
 use std::collections::HashSet;
+use wasm_bindgen::prelude::*;
 
 pub fn parse_select_statement(sql: String) -> Result<Query, String> {
     let dialect = GenericDialect {};
@@ -15,7 +15,7 @@ pub fn parse_select_statement(sql: String) -> Result<Query, String> {
 
     match results {
         Err(error) => {
-            return Err(format!("Parsing error: {}", error.to_string()));
+            return Err(format!("Parsing error: {}", error));
         }
         Ok(mut ast) => {
             if ast.is_empty() {
@@ -128,12 +128,12 @@ fn table_names_from_set_expr(body: SetExpr) -> Vec<String> {
         }
 
         SetExpr::SetOperation {
-            box left,
-            box right,
+            left,
+            right,
             ..
         } => {
-            let mut table_names = table_names_from_set_expr(left);
-            let l2 = table_names_from_set_expr(right);
+            let mut table_names = table_names_from_set_expr(*left);
+            let l2 = table_names_from_set_expr(*right);
             table_names.extend(l2);
             return table_names;
         }
@@ -455,8 +455,8 @@ mod table_name_tests {
     #[test]
     fn case_with_sub_query() {
         assert(
-    "select 
-            abc, 
+    "select
+            abc,
             (case when user_id > 0 then (select max(active_time) from users where id = user_id) else NULL end) last_active_time
           from events",
 vec!["events", "users"]);
@@ -465,7 +465,7 @@ vec!["events", "users"]);
     #[test]
     fn window_function() {
         assert(
-            "select emp_name, dealer_id, sales, avg(sales) over (partition by dealer_id) as avgsales from q1_sales;", 
+            "select emp_name, dealer_id, sales, avg(sales) over (partition by dealer_id) as avgsales from q1_sales;",
             vec!["q1_sales"]);
     }
 }
@@ -555,6 +555,17 @@ fn projection_name_from_expr(e: Expr) -> String {
             // IN all other circumstances, we don't know the column name.
             return "UNNAMED".to_string();
         }
+    }
+}
+
+#[wasm_bindgen]
+pub fn extract_table_names(sql: String) -> JsValue {
+    match get_table_names(sql) {
+        Ok(table_names) =>
+        JsValue::from(table_names.into_iter()
+            .map(|x| JsValue::from_str(x.as_str()))
+            .collect::<js_sys::Array>()),
+        Err(e) => JsValue::from_str(format!("Error in Query: {:?}", e).as_str())
     }
 }
 

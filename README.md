@@ -1,6 +1,6 @@
 # sqlcli
 
-`sqlcli` is a CLI tool written to parse SQL statements and answer questions about them.
+`sqlcli` is a CLI (and [WASM](#wasm)) tool written to parse SQL statements and answer questions about them.
 
 Currently, it only really does two things:
 
@@ -11,7 +11,7 @@ Currently, it only really does two things:
 
 It's written in rust. Probably not very idiomatic rust, since it was written in a hurry. Feedback welcome!
 
-## Usage
+## Command Line Usage
 
 Display help: 
 
@@ -145,7 +145,18 @@ WILDCARD: b.*
 ```
 
 
-## Build & test
+
+
+## WASM
+
+Building for WASM:
+
+```
+# Install wasm-pack first (eg: `brew install wasm-pack`)
+$ wasm-pack build --target nodejs
+```
+
+## Build and Test
 
 Install [rust](https://www.rust-lang.org/), and run:
 
